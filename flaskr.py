@@ -2,6 +2,8 @@ import os
 
 from flask import Flask
 from flask_behind_proxy import FlaskBehindProxy
+from db import close_db, init_db_command
+from auth import bp
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -10,6 +12,10 @@ app.config.from_mapping(
     SECRET_KEY='dev',
     DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
 )
+
+app.teardown_appcontext(close_db)
+app.cli.add_command(init_db_command)
+app.register_blueprint(bp)
 
 # ensure the instance folder exists
 try:
