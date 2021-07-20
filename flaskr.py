@@ -4,6 +4,7 @@ from flask import Flask
 from flask_behind_proxy import FlaskBehindProxy
 from db import close_db, init_db_command
 from auth import bp
+import blog
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -16,6 +17,8 @@ app.config.from_mapping(
 app.teardown_appcontext(close_db)
 app.cli.add_command(init_db_command)
 app.register_blueprint(bp)
+app.register_blueprint(blog.bp)
+app.add_url_rule('/', endpoint='index')
 
 # ensure the instance folder exists
 try:
